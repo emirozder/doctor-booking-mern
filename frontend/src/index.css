@@ -4,6 +4,10 @@
   @apply opacity-100;
 }
 
+::-webkit-scrollbar {
+  @apply hidden;
+}
+
 @theme {
   --color-primary: #5e74fb;
 }
