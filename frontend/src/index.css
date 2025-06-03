@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+.active hr {
+  @apply opacity-100;
+}
+
+@theme {
+  --color-primary: #5e74fb;
+}
