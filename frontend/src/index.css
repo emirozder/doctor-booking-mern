@@ -12,4 +12,8 @@
 @theme {
   --color-primary: #5e74fb;
   --font-inter: "Inter", "sans-serif";
+  --grid-template-columns-auto: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+@layer components {
 }
