@@ -13,7 +13,7 @@ import MyProfile from "./pages/MyProfile";
 
 const App = () => {
   return (
-    <div className="mx-4 sm:mx-[10%] font-inter">
+    <div className="mx-4 sm:mx-[10%] font-outfit">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
