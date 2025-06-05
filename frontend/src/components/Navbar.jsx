@@ -5,12 +5,12 @@ import { assets } from "../assets/assets";
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const [showMenu, setShowMenu] = useState(false); //TODO
+  const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(true);
 
   return (
-    <div className="flex items-center justify-between text-sm pt-4 pb-3 mb-5 border-b border-b-gray-400">
-      <NavLink to="/">
+    <div className="flex items-center justify-between text-sm pt-4 pb-3 mb-5 border-b border-b-gray-400 sticky top-0 right-0 bg-white z-50">
+      <NavLink to="/" onClick={() => scrollTo(0, 0)}>
         <img
           src={assets.logo}
           alt="healpoint_logo"
@@ -18,19 +18,19 @@ const Navbar = () => {
         />
       </NavLink>
       <ul className="hidden md:flex items-start gap-5 font-medium">
-        <NavLink to="/">
+        <NavLink to="/" onClick={() => scrollTo(0, 0)}>
           <li className="py-1">HOME</li>
           <hr className="border-none outline-none h-0.5 w-3/5 m-auto bg-primary opacity-0 transition-opacity duration-500" />
         </NavLink>
-        <NavLink to="/doctors">
+        <NavLink to="/doctors" onClick={() => scrollTo(0, 0)}>
           <li className="py-1">ALL DOCTORS</li>
           <hr className="border-none outline-none h-0.5 w-3/5 m-auto bg-primary opacity-0 transition-opacity duration-500" />
         </NavLink>
-        <NavLink to="/about">
+        <NavLink to="/about" onClick={() => scrollTo(0, 0)}>
           <li className="py-1">ABOUT</li>
           <hr className="border-none outline-none h-0.5 w-3/5 m-auto bg-primary opacity-0 transition-opacity duration-500" />
         </NavLink>
-        <NavLink to="/contact">
+        <NavLink to="/contact" onClick={() => scrollTo(0, 0)}>
           <li className="py-1">CONTACT</li>
           <hr className="border-none outline-none h-0.5 w-3/5 m-auto bg-primary opacity-0 transition-opacity duration-500" />
         </NavLink>
@@ -105,10 +105,6 @@ const Navbar = () => {
             />
           </div>
           <ul className="flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium">
-            {/* <NavLink>HOME</NavLink>
-            <NavLink>ALL DOCTORS</NavLink>
-            <NavLink>ABOUT</NavLink>
-            <NavLink>CONTACT</NavLink> */}
             <NavLink to="/" onClick={() => setShowMenu(false)}>
               <li className="py-1">HOME</li>
               <hr className="border-none outline-none h-0.5 w-3/5 m-auto bg-primary opacity-0 transition-opacity duration-500" />
