@@ -7,7 +7,7 @@ const Sidebar = () => {
   const { adminToken } = useContext(AdminContext);
 
   return (
-    <div className="min-h-screen md:min-h-[calc(100vh-77px)] bg-white border-r border-gray-200">
+    <div className="min-h-[calc(100vh-77px)] bg-white border-r border-gray-200">
       {adminToken && (
         <ul className="text-[#515151] mt-5">
           <NavLink
@@ -18,7 +18,7 @@ const Sidebar = () => {
               }`
             }
           >
-            <img src={assets.home_icon} alt="home" />
+            <img src={assets.home_icon} alt="home" className="min-w-5" />
             <p className="hidden md:block">Dashboard</p>
           </NavLink>
           <NavLink
@@ -29,7 +29,11 @@ const Sidebar = () => {
               }`
             }
           >
-            <img src={assets.appointment_icon} alt="appointment" />
+            <img
+              src={assets.appointment_icon}
+              alt="appointment"
+              className="min-w-5"
+            />
             <p className="hidden md:block">Appointments</p>
           </NavLink>
           <NavLink
@@ -40,7 +44,7 @@ const Sidebar = () => {
               }`
             }
           >
-            <img src={assets.add_icon} alt="add-doc" />
+            <img src={assets.add_icon} alt="add-doc" className="min-w-5" />
             <p className="hidden md:block">Add Doctor</p>
           </NavLink>
           <NavLink
@@ -51,7 +55,7 @@ const Sidebar = () => {
               }`
             }
           >
-            <img src={assets.people_icon} alt="doc-list" />
+            <img src={assets.people_icon} alt="doc-list" className="min-w-5" />
             <p className="hidden md:block">Doctor List</p>
           </NavLink>
         </ul>
