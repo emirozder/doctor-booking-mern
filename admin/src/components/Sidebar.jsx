@@ -7,7 +7,7 @@ const Sidebar = () => {
   const { adminToken } = useContext(AdminContext);
 
   return (
-    <div className="min-h-screen bg-white border-r border-gray-200">
+    <div className="min-h-screen md:min-h-[calc(100vh-77px)] bg-white border-r border-gray-200">
       {adminToken && (
         <ul className="text-[#515151] mt-5">
           <NavLink
