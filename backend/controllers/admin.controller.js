@@ -35,6 +35,20 @@ export const loginAdmin = async (req, res) => {
   }
 }
 
+export const getAllDoctors = async (req, res) => {
+  try {
+    // fetch all doctors from database
+    const doctors = await Doctor.find({}).select('-password');
+
+    // respond with success
+    res.status(200).json({ success: true, message: 'Doctors fetched successfully', data: doctors });
+
+  } catch (error) {
+    console.error('Error in getAllDoctors:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 export const addDoctor = async (req, res) => {
   try {
     const { name, email, password, speciality, degree, experience, about, fees, address } = req.body;
