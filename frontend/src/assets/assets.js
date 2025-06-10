@@ -27,6 +27,7 @@ import group_profiles from './group_profiles.png'
 import Gynecologist from './Gynecologist.svg'
 import header_img from './header_img.png'
 import info_icon from './info_icon.svg'
+import loading_icon from './loading_icon.png'
 import logo from './logo.png'
 import menu_icon from './menu_icon.svg'
 import Neurologist from './Neurologist.svg'
@@ -54,6 +55,7 @@ export const assets = {
   cross_icon,
   dropdown_icon,
   upload_icon,
+  loading_icon,
   stripe_logo,
   razorpay_logo
 }

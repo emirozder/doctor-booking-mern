@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import About from "./pages/About";
@@ -29,6 +30,7 @@ const App = () => {
         </Routes>
       </div>
       <Footer />
+      <ToastContainer />
     </div>
   );
 };

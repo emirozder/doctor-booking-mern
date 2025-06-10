@@ -3,14 +3,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { specialityData } from "../assets/assets";
 import DoctorCard from "../components/DoctorCard";
 import { AppContext } from "../context/AppContext";
+import { assets } from "../assets/assets";
 
 const Doctors = () => {
   const navigate = useNavigate();
   const { speciality } = useParams();
-  const { doctors } = useContext(AppContext);
+  const { doctors, fetchDoctors, doctorsLoading } = useContext(AppContext);
 
   const [filterDoc, setFilterDoc] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
+
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
 
   useEffect(() => {
     filterDoctors();
@@ -62,11 +67,21 @@ const Doctors = () => {
           ))}
         </div>
 
-        <div className="w-full grid grid-cols-auto gap-4 gap-y-6">
-          {filterDoc.map((doctor) => (
-            <DoctorCard key={doctor._id} doctor={doctor} />
-          ))}
-        </div>
+        {doctorsLoading ? (
+          <div className="flex items-center justify-center w-full my-auto">
+            <img
+              src={assets.loading_icon}
+              alt="loading"
+              className="animate-spin size-8"
+            />
+          </div>
+        ) : (
+          <div className="w-full grid grid-cols-auto gap-4 gap-y-6">
+            {filterDoc.map((doctor) => (
+              <DoctorCard key={doctor._id} doctor={doctor} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
