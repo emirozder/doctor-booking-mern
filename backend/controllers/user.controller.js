@@ -46,3 +46,39 @@ export const userRegister = async (req, res) => {
   }
 }
 
+export const userLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'User not found' });
+    }
+
+    // check email
+    if (email !== user.email) {
+      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // Generate token
+    const token = generateUserToken(user._id);
+
+    res.status(200).json({ success: true, message: 'User logged in successfully', token: token });
+  } catch (error) {
+    console.error("Error in User Login", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
