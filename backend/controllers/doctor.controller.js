@@ -37,3 +37,22 @@ export const changeAvailability = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const getAllDoctors = async (req, res) => {
+  try {
+    // Fetch all doctors from the database
+    const doctors = await Doctor.find({}).select(['-password', '-email']);
+
+    // If no doctors found, return an empty array
+    if (!doctors || doctors.length === 0) {
+      return res.status(404).json({ success: false, message: 'No doctors found', data: [] });
+    }
+
+    // Respond with success and the list of doctors
+    res.status(200).json({ success: true, message: 'Doctors fetched successfully', data: doctors });
+
+  } catch (error) {
+    console.error('Error in getAllDoctors:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
