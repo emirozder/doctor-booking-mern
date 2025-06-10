@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { v2 as cloudinary } from 'cloudinary';
 import validator from "validator";
 import Doctor from "../models/doctor.model.js";
-import { generateToken } from "../utils/generateToken.js";
+import { generateAdminToken } from "../utils/generateToken.js";
 
 export const loginAdmin = async (req, res) => {
   try {
@@ -24,7 +24,7 @@ export const loginAdmin = async (req, res) => {
     }
 
     // create JWT token
-    const token = generateToken(email, password);
+    const token = generateAdminToken(email, password);
 
     // respond with success
     res.status(200).json({ success: true, message: 'Login successful', token: token });
@@ -66,7 +66,7 @@ export const addDoctor = async (req, res) => {
 
     // validating strong password
     if (!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0 })) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' });
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long, with at least one lowercase letter, one uppercase letter, and one number' });
     }
 
     // hash password
