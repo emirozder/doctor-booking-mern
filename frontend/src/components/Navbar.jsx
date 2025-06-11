@@ -8,6 +8,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [showMenu, setShowMenu] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const handleLogout = () => {
     navigate("/login");
@@ -42,9 +43,14 @@ const Navbar = () => {
           <hr className="border-none outline-none h-0.5 w-3/5 m-auto bg-primary opacity-0 transition-opacity duration-500" />
         </NavLink>
       </ul>
-      <div className="flex items-center gap-4">
+      <div
+        onMouseEnter={() => setShowProfileDropdown(true)}
+        onMouseLeave={() => setShowProfileDropdown(false)}
+        onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+        className="flex items-center gap-4"
+      >
         {token ? (
-          <div className="flex items-center gap-2 cursor-pointer group relative">
+          <div className="flex items-center gap-2 cursor-pointer relative">
             <img
               src={assets.profile_pic}
               alt="user-profile-pic"
@@ -55,16 +61,26 @@ const Navbar = () => {
               alt="menudropdown"
               className="w-2.5"
             />
-            <div className="absolute top-0 right-0 pt-15 text-base font-medium text-gray-600 z-20 hidden group-hover:block">
+            <div
+              className={`absolute top-0 right-0 pt-15 text-base font-medium text-gray-600 z-20 ${
+                showProfileDropdown ? "block" : "hidden"
+              }`}
+            >
               <div className="min-w-48 bg-stone-100 rounded-sm flex flex-col gap-4 p-4">
                 <p
-                  onClick={() => navigate("/my-profile")}
+                  onClick={() => {
+                    navigate("/my-profile");
+                    scrollTo(0, 0);
+                  }}
                   className="hover:text-black cursor-pointer"
                 >
                   My Profile
                 </p>
                 <p
-                  onClick={() => navigate("/my-appointments")}
+                  onClick={() => {
+                    navigate("/my-appointments");
+                    scrollTo(0, 0);
+                  }}
                   className="hover:text-black cursor-pointer"
                 >
                   My Appointments
@@ -74,6 +90,7 @@ const Navbar = () => {
                     setToken(false);
                     localStorage.removeItem("token");
                     navigate("/login");
+                    scrollTo(0, 0);
                   }}
                   className="hover:text-black cursor-pointer"
                 >
