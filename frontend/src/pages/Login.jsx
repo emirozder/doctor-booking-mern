@@ -1,18 +1,81 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AppContext } from "../context/AppContext";
 
 const Login = () => {
-  const [state, setState] = useState("Sign Up");
+  const { backendUrl, token, setToken } = useContext(AppContext);
+  const navigate = useNavigate();
+  const [state, setState] = useState("Login");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    // confirmPassword: "",
   });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    const { name, email, password } = formData;
+    try {
+      if (state === "Sign Up") {
+        // Sign Up Logic
+        if (!name || !email || !password) {
+          toast.error("All fields are required for sign up.");
+          return;
+        }
+        // Call API to sign up
+        const res = await axios.post(`${backendUrl}/user/register`, {
+          name,
+          email,
+          password,
+        });
+        if (res.data.success) {
+          localStorage.setItem("token", res.data.token);
+          setToken(res.data.token);
+          navigate("/"); // Redirect to home page after successful sign up
+        } else {
+          toast.error(res.data.message);
+        }
+      } else {
+        // Login Logic
+        if (!email || !password) {
+          toast.error("Email and password are required for login.");
+          return;
+        }
+        // Call API to log in
+        const res = await axios.post(`${backendUrl}/user/login`, {
+          email,
+          password,
+        });
+        if (res.data.success) {
+          localStorage.setItem("token", res.data.token);
+          setToken(res.data.token);
+          navigate("/"); // Redirect to home page after successful login
+        } else {
+          toast.error(res.data.message);
+        }
+      }
+    } catch (error) {
+      console.error(
+        `Error ${state === "Sign Up" ? "signing up" : "logging in"}`,
+        error
+      );
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          `Failed to ${
+            state === "Sign Up" ? "sign up" : "log in"
+          }. Please try again later.`
+      );
+    }
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/"); // Redirect to home page if already logged in
+    }
+  }, [token]);
 
   return (
     <form onSubmit={onSubmit} className="min-h-[80vh] flex items-center">
@@ -66,10 +129,16 @@ const Login = () => {
             required
             placeholder="Enter your password"
             className="w-full p-2 mt-1 border border-zinc-300 rounded"
+            autoComplete={
+              state === "Sign Up" ? "new-password" : "current-password"
+            }
           />
         </div>
 
-        <button className="bg-primary text-white w-full py-2 rounded-md text-base cursor-pointer hover:bg-primary/90 transition-all duration-300">
+        <button
+          type="submit"
+          className="bg-primary text-white w-full py-2 rounded-md text-base cursor-pointer hover:bg-primary/90 transition-all duration-300"
+        >
           {state === "Sign Up" ? "Create Account" : "Login"}
         </button>
 
