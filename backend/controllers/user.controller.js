@@ -39,7 +39,22 @@ export const userRegister = async (req, res) => {
     // Generate token
     const token = generateUserToken(user._id); // Uncomment if you want to generate a token
 
-    res.status(201).json({ success: true, message: 'User registered successfully', token: token });
+    // return user data without password
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      address: user.address,
+      gender: user.gender,
+      dob: user.dob,
+      phone: user.phone,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      __v: user.__v
+    };
+
+    res.status(201).json({ success: true, message: 'User registered successfully', token: token, data: userData });
   } catch (error) {
     console.error("Error in User Register", error);
     res.status(500).json({ success: false, message: error.message });
@@ -75,7 +90,22 @@ export const userLogin = async (req, res) => {
     // Generate token
     const token = generateUserToken(user._id);
 
-    res.status(200).json({ success: true, message: 'User logged in successfully', token: token });
+    // return user data without password
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      address: user.address,
+      gender: user.gender,
+      dob: user.dob,
+      phone: user.phone,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      __v: user.__v
+    };
+
+    res.status(200).json({ success: true, message: 'User logged in successfully', token: token, data: userData });
   } catch (error) {
     console.error("Error in User Login", error);
     res.status(500).json({ success: false, message: error.message });

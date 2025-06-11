@@ -10,6 +10,11 @@ const AppContextProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") ?? "");
   const [doctors, setDoctors] = useState([]);
   const [doctorsLoading, setDoctorsLoading] = useState(true);
+  const [userData, setUserData] = useState(
+    localStorage.getItem("userData")
+      ? JSON.parse(localStorage.getItem("userData"))
+      : {}
+  );
 
   const fetchDoctors = async () => {
     try {
@@ -40,6 +45,8 @@ const AppContextProvider = ({ children }) => {
     fetchDoctors,
     token,
     setToken,
+    userData,
+    setUserData,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

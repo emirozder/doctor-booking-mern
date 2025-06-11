@@ -14,6 +14,8 @@ const Navbar = () => {
     navigate("/login");
     token && setToken("");
     token && localStorage.removeItem("token");
+    localStorage.removeItem("userData");
+    scrollTo(0, 0);
   };
 
   return (
@@ -86,12 +88,7 @@ const Navbar = () => {
                   My Appointments
                 </p>
                 <p
-                  onClick={() => {
-                    setToken(false);
-                    localStorage.removeItem("token");
-                    navigate("/login");
-                    scrollTo(0, 0);
-                  }}
+                  onClick={handleLogout}
                   className="hover:text-black cursor-pointer"
                 >
                   Logout
@@ -101,7 +98,7 @@ const Navbar = () => {
           </div>
         ) : (
           <button
-            onClick={handleLogout}
+            onClick={() => navigate("/login")}
             className="bg-primary text-white px-5 py-3 rounded-full font-light hidden md:block cursor-pointer"
           >
             Create Account
