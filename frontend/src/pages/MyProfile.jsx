@@ -1,20 +1,9 @@
-import React, { useState } from "react";
-import { assets } from "../assets/assets";
+import React, { useContext, useState } from "react";
+import { AppContext } from "../context/AppContext";
 
 const MyProfile = () => {
-  const [userData, setUserData] = useState({
-    name: "Jimmy McGill",
-    image: assets.profile_pic,
-    email: "jimmymcgill@hotmail.com",
-    phone: "123-456-7890",
-    address: {
-      line1: "123 Main St,",
-      line2: "Albuquerque, NM",
-    },
-    gender: "Male",
-    dob: "1980-01-01",
-  });
-  const [editMode, setEditMode] = useState(true);
+  const { userData, setUserData } = useContext(AppContext);
+  const [editMode, setEditMode] = useState(false);
 
   return (
     <div className="max-w-lg flex flex-col gap-2 text-sm">

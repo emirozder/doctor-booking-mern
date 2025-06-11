@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { AppContext } from "../context/AppContext";
 
 const Login = () => {
-  const { backendUrl, token, setToken } = useContext(AppContext);
+  const { backendUrl, token, setToken, setUserData } = useContext(AppContext);
   const navigate = useNavigate();
   const [state, setState] = useState("Login");
   const [formData, setFormData] = useState({
@@ -33,6 +33,8 @@ const Login = () => {
         if (res.data.success) {
           localStorage.setItem("token", res.data.token);
           setToken(res.data.token);
+          localStorage.setItem("userData", JSON.stringify(res.data.data));
+          setUserData(res.data.data); // Set user data in context
           navigate("/"); // Redirect to home page after successful sign up
         } else {
           toast.error(res.data.message);
@@ -51,6 +53,8 @@ const Login = () => {
         if (res.data.success) {
           localStorage.setItem("token", res.data.token);
           setToken(res.data.token);
+          localStorage.setItem("userData", JSON.stringify(res.data.data));
+          setUserData(res.data.data); // Set user data in context
           navigate("/"); // Redirect to home page after successful login
         } else {
           toast.error(res.data.message);
