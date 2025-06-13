@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { v2 as cloudinary } from 'cloudinary';
 import validator from "validator";
 import User from "../models/user.model.js";
 import { generateUserToken } from "../utils/generateToken.js";
@@ -112,3 +113,43 @@ export const userLogin = async (req, res) => {
   }
 }
 
+export const updateProfile = async (req, res) => {
+  try {
+    // const { name, phone, address, dob, gender } = req.body;
+    const userId = req.userId; // Assuming userId is set by authUser middleware
+    const imageFile = req.file;
+
+    // Validate input
+    // if (!name || !phone || !dob || !gender) {
+    //   return res.status(400).json({ success: false, message: 'All fields are required' });
+    // }
+
+    // Check if user exists
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // await User.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, { new: true });
+
+    if (imageFile) {
+      // upload image to cloudinary
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        folder: 'doctors',
+        resource_type: 'image'
+      });
+      const imageUrl = imageUpload.secure_url;
+
+      const updatedUser = await User.findByIdAndUpdate(userId, { image: imageUrl }, { new: true });
+      return res.status(200).json({ success: true, message: 'Profile updated successfully', data: updatedUser });
+    }
+
+    res.status(200).json({ success: true, message: 'Profile updated successfully', data: updatedUser });
+
+  } catch (error) {
+    console.error("Error in Update Profile", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
