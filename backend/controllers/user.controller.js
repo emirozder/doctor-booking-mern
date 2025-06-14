@@ -216,8 +216,6 @@ export const bookAppointment = async (req, res) => {
 
 export const getDoctorById = async (req, res) => {
   try {
-    console.log("getDoctorById called with params:", req.params);
-
     const docId = req.params.id;
 
     // Check if docId is provided
