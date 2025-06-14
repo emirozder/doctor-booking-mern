@@ -28,6 +28,7 @@ import Gynecologist from './Gynecologist.svg'
 import header_img from './header_img.png'
 import info_icon from './info_icon.svg'
 import loading_icon from './loading_icon.png'
+import loading_icon_white from './loading_icon_white.png'
 import logo from './logo.png'
 import menu_icon from './menu_icon.svg'
 import Neurologist from './Neurologist.svg'
@@ -56,6 +57,7 @@ export const assets = {
   dropdown_icon,
   upload_icon,
   loading_icon,
+  loading_icon_white,
   stripe_logo,
   razorpay_logo
 }
