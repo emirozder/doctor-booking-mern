@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from 'cloudinary';
 import validator from "validator";
+import Appointment from "../models/appointment.model.js";
+import Doctor from "../models/doctor.model.js";
 import User from "../models/user.model.js";
 import { generateUserToken } from "../utils/generateToken.js";
 
@@ -154,6 +156,60 @@ export const updateProfile = async (req, res) => {
 
   } catch (error) {
     console.error("Error in Update Profile", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const bookAppointment = async (req, res) => {
+  try {
+    const { userId, doctorId, slotDate, slotTime } = req.body;
+
+    // Validate input
+    if (!userId || !doctorId || !slotDate || !slotTime) {
+      return res.status(400).json({ success: false, message: 'Missing fields' });
+    }
+
+    const userData = await User.findById(userId).select('-password');
+
+    const docData = await Doctor.findById(doctorId).select('-password');
+    if (!docData.available) {
+      return res.status(400).json({ success: false, message: 'Doctor is not available' });
+    }
+
+    let slots_booked = docData.slots_booked
+    if (slots_booked[slotDate]) {
+      if (slots_booked[slotDate].includes(slotTime)) {
+        return res.status(400).json({ success: false, message: 'Slot is not available' });
+      } else {
+        slots_booked[slotDate].push(slotTime);
+      }
+    } else {
+      slots_booked[slotDate] = [];
+      slots_booked[slotDate].push(slotTime);
+    }
+
+    delete docData.slots_booked; // Remove slots_booked from docData to avoid sending it in response
+
+    // Create new appointment
+    const appointment = new Appointment({
+      userId,
+      doctorId,
+      slotDate,
+      slotTime,
+      userData,
+      docData,
+      amount: docData.fees,
+      date: Date.now()
+    });
+
+    await appointment.save();
+
+    // Update doctor's slots_booked because we deleted it from docData for response
+    await Doctor.findByIdAndUpdate(doctorId, { slots_booked }, { new: true });
+
+    res.status(201).json({ success: true, message: 'Appointment booked successfully', data: appointment });
+  } catch (error) {
+    console.error("Error in Book Appointment", error);
     res.status(500).json({ success: false, message: error.message });
   }
 }
