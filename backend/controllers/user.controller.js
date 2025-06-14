@@ -213,3 +213,31 @@ export const bookAppointment = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const getDoctorById = async (req, res) => {
+  try {
+    console.log("getDoctorById called with params:", req.params);
+
+    const docId = req.params.id;
+
+    // Check if docId is provided
+    if (!docId) {
+      return res.status(400).json({ success: false, message: 'Doctor ID is required' });
+    }
+
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(docId).select('-password -email');
+
+    // If doctor not found, return an error
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: 'Doctor not found' });
+    }
+
+    // Respond with success and doctor data
+    res.status(200).json({ success: true, message: 'Doctor fetched successfully', data: doctor });
+
+  } catch (error) {
+    console.error('Error in getDoctorById:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
