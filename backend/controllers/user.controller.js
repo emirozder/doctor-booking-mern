@@ -132,7 +132,11 @@ export const updateProfile = async (req, res) => {
     }
 
     // await User.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender }, { new: true });
-    const updatedUser = await User.findByIdAndUpdate(userId, req.body, { new: true });
+    // const updatedUser = await User.findByIdAndUpdate(userId, req.body, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+      ...req.body, address:
+        req.body.address ? JSON.parse(req.body.address) : user.address,
+    }, { new: true });
 
     if (imageFile) {
       // upload image to cloudinary
