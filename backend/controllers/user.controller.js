@@ -241,3 +241,29 @@ export const getDoctorById = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const getDoctorsBySpeciality = async (req, res) => {
+  try {
+    const { speciality } = req.body;
+
+    // Validate input
+    if (!speciality) {
+      return res.status(400).json({ success: false, message: 'Speciality is required' });
+    }
+
+    // Find doctors by speciality
+    const doctors = await Doctor.find({ speciality }).select('-password -email');
+
+    // If no doctors found, return an error
+    if (doctors.length === 0) {
+      return res.status(404).json({ success: false, message: 'No doctors found for this speciality' });
+    }
+
+    // Respond with success and doctors data
+    res.status(200).json({ success: true, message: 'Doctors fetched successfully', data: doctors });
+
+  } catch (error) {
+    console.error('Error in getDoctorsBySpeciality:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
