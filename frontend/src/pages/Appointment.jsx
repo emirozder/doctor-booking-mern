@@ -1,14 +1,18 @@
+import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { assets } from "../assets/assets";
 import DoctorCard from "../components/DoctorCard";
 import { AppContext } from "../context/AppContext";
 
 const Appointment = () => {
   const { docId } = useParams();
-  const { doctors, currencySymbol } = useContext(AppContext);
+  const { currencySymbol, backendUrl, token } = useContext(AppContext);
 
   const [doctorInfo, setDoctorInfo] = useState(null);
+  const [relatedDocs, setRelatedDocs] = useState(null);
+
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState("");
@@ -16,15 +20,72 @@ const Appointment = () => {
 
   useEffect(() => {
     fetchDoctorInfo();
-  }, [docId, doctors]);
+  }, [docId]);
+
+  useEffect(() => {
+    if (doctorInfo) {
+      fetchRelatedDoctors();
+    }
+  }, [doctorInfo?.speciality]);
 
   useEffect(() => {
     getAvailableSlots();
   }, [doctorInfo]);
 
   const fetchDoctorInfo = async () => {
-    const docInfo = doctors.find((doc) => doc._id === docId);
-    setDoctorInfo(docInfo);
+    try {
+      const response = await axios.get(
+        `${backendUrl}/user/get-doctor-by-id/${docId}`,
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+      if (response.data.success) {
+        setDoctorInfo(response.data.data);
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching doctor info:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to fetch doctor information. Please try again later."
+      );
+    }
+  };
+
+  const fetchRelatedDoctors = async () => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/user/get-doctors-by-speciality`,
+        {
+          speciality: doctorInfo?.speciality || "annen",
+        },
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setRelatedDocs(response.data.data);
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching related doctors:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to fetch related doctors. Please try again later."
+      );
+    }
   };
 
   const getAvailableSlots = async () => {
@@ -82,6 +143,10 @@ const Appointment = () => {
       // add the time slots to the docSlots array
       setDocSlots((prev) => [...prev, timeSlots]);
     }
+  };
+
+  const handleBookAppointment = async () => {
+    console.log("handleBookAppointment", slotTime);
   };
 
   return (
@@ -175,30 +240,31 @@ const Appointment = () => {
               ))}
           </div>
 
-          <button className="mt-6 bg-primary text-white text-sm px-10 py-3 rounded-full hover:bg-primary/90 transition-all duration-300 cursor-pointer">
+          <button
+            onClick={handleBookAppointment}
+            className="mt-6 bg-primary text-white text-sm px-10 py-3 rounded-full hover:bg-primary/90 transition-all duration-300 cursor-pointer"
+          >
             Book an Appointment
           </button>
         </div>
 
         {/* RELATED DOCTORS */}
-        <div className="flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10">
-          <h1 className="text-3xl font-medium">Related Doctors</h1>
-          <p className="sm:w-1/3 text-center text-sm">
-            Simply browse through our extensive list of trusted doctors.
-          </p>
-          <div className="w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 px-3 sm:px-0">
-            {doctors
-              .filter(
-                (doctor) =>
-                  doctor._id !== docId &&
-                  doctor.speciality === doctorInfo.speciality
-              )
-              .slice(0, 5)
-              .map((doctor) => (
-                <DoctorCard key={doctor._id} doctor={doctor} />
-              ))}
+        {relatedDocs && relatedDocs.length > 0 && (
+          <div className="flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10">
+            <h1 className="text-3xl font-medium">Related Doctors</h1>
+            <p className="sm:w-1/3 text-center text-sm">
+              Simply browse through our extensive list of trusted doctors.
+            </p>
+            <div className="w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 px-3 sm:px-0">
+              {relatedDocs
+                .filter((doctor) => doctor._id !== docId)
+                .slice(0, 5)
+                .map((doctor) => (
+                  <DoctorCard key={doctor._id} doctor={doctor} />
+                ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     )
   );
