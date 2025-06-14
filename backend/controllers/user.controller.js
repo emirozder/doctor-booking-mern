@@ -162,7 +162,8 @@ export const updateProfile = async (req, res) => {
 
 export const bookAppointment = async (req, res) => {
   try {
-    const { userId, doctorId, slotDate, slotTime } = req.body;
+    const { doctorId, slotDate, slotTime } = req.body;
+    const userId = req.userId; // Assuming userId is set by authUser middleware
 
     // Validate input
     if (!userId || !doctorId || !slotDate || !slotTime) {
@@ -207,7 +208,7 @@ export const bookAppointment = async (req, res) => {
     // Update doctor's slots_booked because we deleted it from docData for response
     await Doctor.findByIdAndUpdate(doctorId, { slots_booked }, { new: true });
 
-    res.status(201).json({ success: true, message: 'Appointment booked successfully', data: appointment });
+    res.status(201).json({ success: true, message: 'Appointment booked successfully' });
   } catch (error) {
     console.error("Error in Book Appointment", error);
     res.status(500).json({ success: false, message: error.message });
