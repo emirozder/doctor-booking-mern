@@ -10,7 +10,7 @@ userRouter.post('/register', userRegister)
 userRouter.post('/login', userLogin)
 userRouter.post('/update-profile', authUser, upload.single('image'), updateProfile)
 userRouter.post('/book-appointment', authUser, bookAppointment)
-userRouter.get('/get-doctor-by-id/:id', authUser, getDoctorById);
-userRouter.post('/get-doctors-by-speciality', authUser, getDoctorsBySpeciality)
+userRouter.get('/get-doctor-by-id/:id', getDoctorById);
+userRouter.post('/get-doctors-by-speciality', getDoctorsBySpeciality)
 
 export default userRouter;
