@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { assets } from "../assets/assets";
 import DoctorCard from "../components/DoctorCard";
@@ -9,6 +9,7 @@ import { AppContext } from "../context/AppContext";
 const Appointment = () => {
   const { docId } = useParams();
   const { currencySymbol, backendUrl, token } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const [doctorInfo, setDoctorInfo] = useState(null);
   const [relatedDocs, setRelatedDocs] = useState(null);
@@ -130,12 +131,28 @@ const Appointment = () => {
           minute: "2-digit",
         });
 
-        // add slot to the time slots array
-        timeSlots.push({
-          datetime: new Date(currentDate),
-          time: formattedTime,
-        });
+        // check if the slot is already booked
+        let day = currentDate.getDate();
+        let month = currentDate.getMonth() + 1; // Months are zero-based
+        let year = currentDate.getFullYear();
+        const slotDate = `${day < 10 ? "0" + day : day}_${
+          month < 10 ? "0" + month : month
+        }_${year}`;
+        const slotTime = formattedTime;
+        const isSlotAvailable =
+          doctorInfo?.slots_booked[slotDate] &&
+          doctorInfo?.slots_booked[slotDate].includes(slotTime)
+            ? false
+            : true;
 
+        // if slot is available, add it to the time slots array
+        if (isSlotAvailable) {
+          // add slot to the time slots array
+          timeSlots.push({
+            datetime: new Date(currentDate),
+            time: formattedTime,
+          });
+        }
         // increment current date by 30 minutes
         currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
@@ -146,7 +163,56 @@ const Appointment = () => {
   };
 
   const handleBookAppointment = async () => {
-    console.log("handleBookAppointment", slotTime);
+    if (!token) {
+      toast.warning("Please login to book an appointment.");
+      return navigate("/login");
+    }
+
+    try {
+      if (!slotTime) {
+        toast.error("Please select a slot time.");
+        return;
+      }
+
+      const date = docSlots[slotIndex][0].datetime;
+      let day = date.getDate();
+      let month = date.getMonth() + 1; // Months are zero-based
+      let year = date.getFullYear();
+      const slotDate = `${day < 10 ? "0" + day : day}_${
+        month < 10 ? "0" + month : month
+      }_${year}`;
+
+      const response = await axios.post(
+        `${backendUrl}/user/book-appointment`,
+        {
+          // userId: JSON.parse(localStorage.getItem("userData"))._id,
+          doctorId: doctorInfo?._id,
+          slotDate,
+          slotTime,
+        },
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Appointment booked successfully!");
+        fetchDoctorInfo(); // Refresh doctor info to update slots
+        navigate("/my-appointments"); // Redirect to my appointments page
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to book appointment. Please try again later."
+      );
+    }
   };
 
   return (
@@ -157,7 +223,7 @@ const Appointment = () => {
           {/* IMAGE */}
           <div>
             <img
-              src={doctorInfo.image}
+              src={doctorInfo?.image}
               alt=""
               className="bg-primary w-full sm:max-w-72 rounded-lg"
             />
@@ -165,7 +231,7 @@ const Appointment = () => {
           {/* DETAILS */}
           <div className="flex-1 border border-gray-400 rounded-lg px-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
             <p className="flex items-center gap-2 text-2xl font-medium text-gray-900">
-              {doctorInfo.name}
+              {doctorInfo?.name}
               <img
                 src={assets.verified_icon}
                 alt="verified"
@@ -174,9 +240,9 @@ const Appointment = () => {
             </p>
 
             <div className="flex items-center gap-2 text-sm mt-1 text-gray-600">
-              <p>{doctorInfo.degree.concat(" - ", doctorInfo.speciality)}</p>
+              <p>{doctorInfo?.degree.concat(" - ", doctorInfo?.speciality)}</p>
               <button className="px-2 py-0.5 border border-gray-400 rounded-full text-xs">
-                {doctorInfo.experience}
+                {doctorInfo?.experience}
               </button>
             </div>
 
@@ -185,14 +251,14 @@ const Appointment = () => {
                 About <img src={assets.info_icon} alt="info" />
               </p>
               <p className="text-sm text-gray-500 max-w-[700px] mt-1">
-                {doctorInfo.about}
+                {doctorInfo?.about}
               </p>
             </div>
 
             <p className="text-gray-500 font-medium mt-4">
               Appointment fee:{" "}
               <span className="text-gray-600">
-                {currencySymbol.concat(doctorInfo.fees)}
+                {currencySymbol.concat(doctorInfo?.fees)}
               </span>
             </p>
           </div>
