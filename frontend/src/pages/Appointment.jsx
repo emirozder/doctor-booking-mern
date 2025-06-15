@@ -114,11 +114,14 @@ const Appointment = () => {
               : currentDate.getHours()
             : 10
         );
-        currentDate.setMinutes(currentDate.getMinutes() >= 30 ? 0 : 30);
+        currentDate.setMinutes(
+          currentDate.getMinutes() >= 30 || currentDate.getHours() <= 10
+            ? 0
+            : 30
+        );
       } else {
         // if current date is not today, set hours to 10 AM
         currentDate.setHours(10, 0);
-        // currentDate.setMinutes(0);
       }
 
       const timeSlots = [];
