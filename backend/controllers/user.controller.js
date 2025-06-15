@@ -279,11 +279,6 @@ export const getUserAppointments = async (req, res) => {
     // Find appointments for the user
     const appointments = await Appointment.find({ userId }).sort({ slotDate: 1, slotTime: 1 })
 
-    // If no appointments found, return an error
-    if (appointments.length === 0) {
-      return res.status(404).json({ success: false, message: 'No appointments found' });
-    }
-
     // Respond with success and appointments data
     res.status(200).json({ success: true, message: 'Appointments fetched successfully', data: appointments });
 
