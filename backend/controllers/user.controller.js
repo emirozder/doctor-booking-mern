@@ -266,3 +266,29 @@ export const getDoctorsBySpeciality = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const getUserAppointments = async (req, res) => {
+  try {
+    const userId = req.userId; // Assuming userId is set by authUser middleware
+
+    // Validate userId
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
+
+    // Find appointments for the user
+    const appointments = await Appointment.find({ userId }).sort({ slotDate: 1, slotTime: 1 })
+
+    // If no appointments found, return an error
+    if (appointments.length === 0) {
+      return res.status(404).json({ success: false, message: 'No appointments found' });
+    }
+
+    // Respond with success and appointments data
+    res.status(200).json({ success: true, message: 'Appointments fetched successfully', data: appointments });
+
+  } catch (error) {
+    console.error('Error in getUserAppointments:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
