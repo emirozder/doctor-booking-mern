@@ -33,6 +33,10 @@ const Appointment = () => {
     getAvailableSlots();
   }, [doctorInfo]);
 
+  useEffect(() => {
+    setSlotTime("");
+  }, [slotIndex]);
+
   const fetchDoctorInfo = async () => {
     try {
       const response = await axios.get(
@@ -148,14 +152,13 @@ const Appointment = () => {
             ? false
             : true;
 
-        // if slot is available, add it to the time slots array
-        if (isSlotAvailable) {
-          // add slot to the time slots array
-          timeSlots.push({
-            datetime: new Date(currentDate),
-            time: formattedTime,
-          });
-        }
+        // add slot to the time slots array and set isAvailable based on the slot availability
+        timeSlots.push({
+          datetime: new Date(currentDate),
+          time: formattedTime,
+          isAvailable: isSlotAvailable,
+        });
+
         // increment current date by 30 minutes
         currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
@@ -272,8 +275,8 @@ const Appointment = () => {
           <p>Booking Slots</p>
 
           <div className="flex gap-3 items-center w-full overflow-x-scroll mt-4">
-            {docSlots.length &&
-              docSlots.map((item, index) => (
+            {docSlots?.length &&
+              docSlots?.map((item, index) => (
                 <div
                   key={index}
                   onClick={() => {
@@ -292,20 +295,23 @@ const Appointment = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-2 mt-5">
-            {docSlots.length &&
+            {docSlots?.length &&
               docSlots[slotIndex] &&
               docSlots[slotIndex].map((slot, index) => (
-                <p
+                <button
                   key={index}
+                  disabled={!slot.isAvailable}
                   onClick={() => setSlotTime(slot.time)}
                   className={`px-4 py-2 rounded-lg text-sm shrink-0 cursor-pointer text-center transition-all duration-300 ${
                     slotTime === slot.time
                       ? "bg-primary text-white"
                       : "border border-gray-200 hover:bg-gray-100 "
+                  } ${
+                    slot.isAvailable ? "" : "opacity-50 cursor-not-allowed!"
                   }`}
                 >
                   {slot.time}
-                </p>
+                </button>
               ))}
           </div>
 
