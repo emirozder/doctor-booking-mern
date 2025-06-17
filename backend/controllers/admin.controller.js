@@ -111,13 +111,61 @@ export const addDoctor = async (req, res) => {
 export const getAllAppointments = async (req, res) => {
   try {
     // fetch all appointments from database
-    const appointments = await Appointment.find({})
+    const appointments = await Appointment.find({}).sort({ slotDate: 1, slotTime: 1 })
 
     // respond with success
     res.status(200).json({ success: true, message: 'Appointments fetched successfully', data: appointments });
 
   } catch (error) {
     console.error('Error in getAllAppointments:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const cancelAppointment = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    // check for appointment ID
+    if (!appointmentId) {
+      return res.status(400).json({ success: false, message: 'Appointment ID is required' });
+    }
+
+    // Find the appointment
+    const appointmentData = await Appointment.findById(appointmentId);
+
+    if (!appointmentData) {
+      return res.status(404).json({ success: false, message: 'Appointment not found' });
+    }
+
+    // Check if the appointment is already cancelled
+    if (appointmentData.cancelled) {
+      return res.status(400).json({ success: false, message: 'Appointment is already cancelled' });
+    }
+
+    // Update doctor's slots_booked
+    const { doctorId, slotDate, slotTime } = appointmentData;
+    const doctorData = await Doctor.findById(doctorId);
+    let slots_booked = doctorData.slots_booked;
+    if (slots_booked[slotDate]) {
+      slots_booked[slotDate] = slots_booked[slotDate].filter(slot => slot !== slotTime);
+      if (slots_booked[slotDate].length === 0) {
+        delete slots_booked[slotDate]; // Remove the date entry if no slots are left
+      }
+    } else {
+      return res.status(400).json({ success: false, message: 'No slots booked for this date' });
+    }
+
+    const updatedDoctorData = await Doctor.findByIdAndUpdate(doctorId, { slots_booked }, { new: true });
+
+    // Set appointment as cancelled and set doctor's updated slots_booked
+    await Appointment.findByIdAndUpdate(appointmentId, { cancelled: true, docData: updatedDoctorData }, { new: true });
+
+    // respond with success
+    res.status(200).json({ success: true, message: 'Appointment cancelled successfully', data: appointment });
+
+  } catch (error) {
+    console.error('Error in cancelAppointment:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 }
