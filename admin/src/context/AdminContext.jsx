@@ -17,6 +17,29 @@ const AdminContextProvider = (props) => {
   const [adminDashboardData, setAdminDashboardData] = useState({});
   const [adminDashboardDataLoading, setAdminDashboardDataLoading] =
     useState(true);
+
+  const adminSidebarItems = [
+    {
+      name: "Dashboard",
+      path: "/admin-dashboard",
+      icon: assets.home_icon,
+    },
+    {
+      name: "Appointments",
+      path: "/all-appointments",
+      icon: assets.appointment_icon,
+    },
+    {
+      name: "Add Doctor",
+      path: "/add-doctor",
+      icon: assets.add_icon,
+    },
+    {
+      name: "Doctor List",
+      path: "/doctor-list",
+      icon: assets.people_icon,
+    },
+  ];
   const dashboardItems = [
     {
       name: "Total Patients",
@@ -173,6 +196,7 @@ const AdminContextProvider = (props) => {
   const value = {
     adminToken,
     setAdminToken,
+    adminSidebarItems,
     backendUrl,
     doctors,
     doctorsLoading,
