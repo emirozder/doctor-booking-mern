@@ -1,4 +1,6 @@
+import bcrypt from 'bcrypt';
 import Doctor from "../models/doctor.model.js";
+import { generateDoctorToken } from "../utils/generateToken.js";
 
 export const changeAvailability = async (req, res) => {
   try {
@@ -53,6 +55,61 @@ export const getAllDoctors = async (req, res) => {
 
   } catch (error) {
     console.error('Error in getAllDoctors:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const doctorLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if email and password are provided
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
+    }
+
+    // Find the doctor by email
+    const doctor = await Doctor.findOne({ email });
+
+    // If doctor not found, return an error
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: 'Doctor not found' });
+    }
+
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, doctor.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // Generate a token (assuming you have a method for this)
+    const token = generateDoctorToken(doctor._id);
+
+    // return the doctor data without password
+    const doctorData = {
+      _id: doctor._id,
+      name: doctor.name,
+      email: doctor.email,
+      image: doctor.image,
+      speciality: doctor.speciality,
+      degree: doctor.degree,
+      experience: doctor.experience,
+      about: doctor.about,
+      available: doctor.available,
+      fees: doctor.fees,
+      address: doctor.address,
+      date: doctor.date,
+      slots_booked: doctor.slots_booked,
+      createdAt: doctor.createdAt,
+      updatedAt: doctor.updatedAt,
+      __v: doctor.__v
+    };
+
+    // Respond with success and the token
+    res.status(200).json({ success: true, message: 'Login successful', token: token, data: doctorData });
+
+  } catch (error) {
+    console.error('Error in doctorLogin:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 }

@@ -11,3 +11,9 @@ export const generateUserToken = (userId) => {
 
   return token
 }
+
+export const generateDoctorToken = (docId) => {
+  const token = jwt.sign({ id: docId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+  return token
+}
