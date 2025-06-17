@@ -2,9 +2,11 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { AdminContext } from "../context/AdminContext";
+import { DoctorContext } from "../context/DoctorContext";
 
 const Login = () => {
   const { setAdminToken, backendUrl } = useContext(AdminContext);
+  const { setDoctorToken } = useContext(DoctorContext);
   const [state, setState] = useState("Admin");
   const [formData, setFormData] = useState({
     email: "",
@@ -23,7 +25,13 @@ const Login = () => {
           toast.error(res.data.message);
         }
       } else {
-        // TODO: Implement Doctor login
+        const res = await axios.post(`${backendUrl}/doctor/login`, formData);
+        if (res.data.success) {
+          localStorage.setItem("doctorToken", res.data.token);
+          setDoctorToken(res.data.token);
+        } else {
+          toast.error(res.data.message);
+        }
       }
     } catch (error) {
       console.error("Login failed:", error);
