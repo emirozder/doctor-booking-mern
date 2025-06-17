@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AdminContext } from "../context/AdminContext";
 import { DoctorContext } from "../context/DoctorContext";
 
 const Login = () => {
+  const navigate = useNavigate();
   const { setAdminToken, backendUrl } = useContext(AdminContext);
   const { setDoctorToken } = useContext(DoctorContext);
   const [state, setState] = useState("Admin");
@@ -21,6 +23,7 @@ const Login = () => {
         if (res.data.success) {
           localStorage.setItem("adminToken", res.data.token);
           setAdminToken(res.data.token);
+          navigate("/admin-dashboard");
         } else {
           toast.error(res.data.message);
         }
@@ -29,6 +32,7 @@ const Login = () => {
         if (res.data.success) {
           localStorage.setItem("doctorToken", res.data.token);
           setDoctorToken(res.data.token);
+          navigate("/doctor-dashboard");
         } else {
           toast.error(res.data.message);
         }
