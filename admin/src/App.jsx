@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { AdminContext } from "./context/AdminContext";
+import { DoctorContext } from "./context/DoctorContext";
 import AddDoctor from "./pages/Admin/AddDoctor";
 import AllAppointments from "./pages/Admin/AllAppointments";
 import Dashboard from "./pages/Admin/Dashboard";
@@ -12,8 +13,9 @@ import Login from "./pages/Login";
 
 const App = () => {
   const { adminToken } = useContext(AdminContext);
+  const { doctorToken } = useContext(DoctorContext);
 
-  return adminToken ? (
+  return adminToken || doctorToken ? (
     <div className="font-outfit bg-[#f8f9fd]">
       <ToastContainer />
       <Navbar />
