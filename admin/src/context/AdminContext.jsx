@@ -11,6 +11,8 @@ const AdminContextProvider = (props) => {
   );
   const [doctors, setDoctors] = useState([]);
   const [doctorsLoading, setDoctorsLoading] = useState(true);
+  const [appointments, setAppointments] = useState([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
 
   const fetchDoctors = async () => {
     try {
@@ -65,6 +67,63 @@ const AdminContextProvider = (props) => {
     }
   };
 
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get(
+        backendUrl + "/admin/get-all-appointments",
+        {
+          headers: {
+            token: adminToken,
+          },
+        }
+      );
+      if (response.data.success) {
+        setAppointments(response.data.data);
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to fetch appointments. Please try again later."
+      );
+    } finally {
+      setAppointmentsLoading(false);
+    }
+  };
+
+  const handleCancelAppointment = async (appointmentId) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/admin/cancel-appointment`,
+        { appointmentId },
+        {
+          headers: {
+            token: adminToken,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        fetchAppointments(); // Refresh the appointments list
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to cancel appointment. Please try again later."
+      );
+    }
+  };
+
   const value = {
     adminToken,
     setAdminToken,
@@ -73,6 +132,10 @@ const AdminContextProvider = (props) => {
     doctorsLoading,
     fetchDoctors,
     changeAvailability,
+    appointments,
+    appointmentsLoading,
+    fetchAppointments,
+    handleCancelAppointment,
   };
 
   return (
