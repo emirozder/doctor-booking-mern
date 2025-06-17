@@ -14,7 +14,7 @@ const App = () => {
   const { adminToken } = useContext(AdminContext);
 
   return adminToken ? (
-    <div className="font-outfit bg-gray-50">
+    <div className="font-outfit bg-[#f8f9fd]">
       <ToastContainer />
       <Navbar />
       <div className="flex items-start">
