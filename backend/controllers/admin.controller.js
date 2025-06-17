@@ -3,6 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import validator from "validator";
 import Appointment from "../models/appointment.model.js";
 import Doctor from "../models/doctor.model.js";
+import User from "../models/user.model.js";
 import { generateAdminToken } from "../utils/generateToken.js";
 
 export const loginAdmin = async (req, res) => {
@@ -166,6 +167,39 @@ export const cancelAppointment = async (req, res) => {
 
   } catch (error) {
     console.error('Error in cancelAppointment:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const adminDashboard = async (req, res) => {
+  try {
+    // Fetch total number of users
+    const totalUsers = await User.countDocuments({});
+
+    // Fetch total number of doctors
+    const totalDoctors = await Doctor.countDocuments({});
+
+    // Fetch total number of appointments
+    const totalAppointments = await Appointment.countDocuments({});
+
+    // Latest appointments
+    const latestAppointments = await Appointment.find({})
+      .sort({ createdAt: -1 })
+      .limit(5)
+
+    res.status(200).json({
+      success: true,
+      message: 'Dashboard data fetched successfully',
+      data: {
+        totalUsers,
+        totalDoctors,
+        totalAppointments,
+        latestAppointments
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in adminDashboard:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 }
