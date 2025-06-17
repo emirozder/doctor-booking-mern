@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from 'cloudinary';
 import validator from "validator";
+import Appointment from "../models/appointment.model.js";
 import Doctor from "../models/doctor.model.js";
 import { generateAdminToken } from "../utils/generateToken.js";
 
@@ -107,3 +108,16 @@ export const addDoctor = async (req, res) => {
   }
 }
 
+export const getAllAppointments = async (req, res) => {
+  try {
+    // fetch all appointments from database
+    const appointments = await Appointment.find({})
+
+    // respond with success
+    res.status(200).json({ success: true, message: 'Appointments fetched successfully', data: appointments });
+
+  } catch (error) {
+    console.error('Error in getAllAppointments:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
