@@ -162,7 +162,7 @@ export const cancelAppointment = async (req, res) => {
     await Appointment.findByIdAndUpdate(appointmentId, { cancelled: true, docData: updatedDoctorData }, { new: true });
 
     // respond with success
-    res.status(200).json({ success: true, message: 'Appointment cancelled successfully', data: appointment });
+    res.status(200).json({ success: true, message: 'Appointment cancelled successfully' });
 
   } catch (error) {
     console.error('Error in cancelAppointment:', error);
