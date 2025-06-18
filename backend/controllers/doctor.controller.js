@@ -227,3 +227,48 @@ export const completeAppointment = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const doctorDashboard = async (req, res) => {
+  try {
+    const docId = req.docId;
+
+    // Check if docId is provided
+    if (!docId) {
+      return res.status(400).json({ success: false, message: 'Doctor ID is required' });
+    }
+
+    // Find the appointments for the doctor
+    const appointments = await Appointment.find({ doctorId: docId }).sort({ createdAt: -1 });
+
+    // Calculate total earnings
+    let earnings = 0;
+    appointments.map((appointment) => {
+      if (appointment.payment || appointment.isCompleted) {
+        earnings += appointment.amount;
+      }
+    })
+
+    // Calculate total patients
+    let patients = [];
+    appointments.map((appointment) => {
+      if (appointment.userId && !patients.includes(appointment.userId)) {
+        patients.push(appointment.userId);
+      }
+    })
+
+    // Dashboard data
+    const dashboardData = {
+      earnings,
+      appointments: appointments.length,
+      patients: patients.length,
+      latestAppointments: appointments.slice(0, 5)
+    };
+
+    // Respond with success and the doctor data
+    res.status(200).json({ success: true, message: 'Doctor data dashboard fetched successfully', data: dashboardData });
+
+  } catch (error) {
+    console.error('Error in doctorDashboard:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
