@@ -4,8 +4,14 @@ import { AppContext } from "../../context/AppContext";
 import { DoctorContext } from "../../context/DoctorContext";
 
 const DoctorAppointments = () => {
-  const { doctorToken, appointments, appointmentsLoading, fetchAppointments } =
-    useContext(DoctorContext);
+  const {
+    doctorToken,
+    appointments,
+    appointmentsLoading,
+    fetchAppointments,
+    handleCancelAppointment,
+    handleCompleteAppointment,
+  } = useContext(DoctorContext);
   const { calculateAge, slotDateFormat, currencySymbol } =
     useContext(AppContext);
 
@@ -89,13 +95,15 @@ const DoctorAppointments = () => {
                       src={assets.cancel_icon}
                       alt="cancel"
                       className="size-8 cursor-pointer hover:scale-110 transition-all duration-300"
-                      // onClick={() => handleCancelAppointment(appointment?._id)}
+                      onClick={() => handleCancelAppointment(appointment?._id)}
                     />
                     <img
                       src={assets.tick_icon}
-                      alt="cancel"
+                      alt="complete"
                       className="size-8 cursor-pointer hover:scale-110 transition-all duration-300"
-                      // onClick={() => handleCancelAppointment(appointment?._id)}
+                      onClick={() =>
+                        handleCompleteAppointment(appointment?._id)
+                      }
                     />
                   </div>
                 )}

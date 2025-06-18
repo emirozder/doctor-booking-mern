@@ -59,6 +59,64 @@ const DoctorContextProvider = (props) => {
     }
   };
 
+  // Handle cancel appointment
+  const handleCancelAppointment = async (appointmentId) => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/doctor/cancel-appointment",
+        { appointmentId },
+        {
+          headers: {
+            token: doctorToken,
+          },
+        }
+      );
+      if (response.data.success) {
+        toast.success("Appointment cancelled successfully");
+        fetchAppointments(); // Refresh appointments after cancellation
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to cancel appointment. Please try again later."
+      );
+    }
+  };
+
+  // Handle complete appointment
+  const handleCompleteAppointment = async (appointmentId) => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/doctor/complete-appointment",
+        { appointmentId },
+        {
+          headers: {
+            token: doctorToken,
+          },
+        }
+      );
+      if (response.data.success) {
+        toast.success("Appointment completed successfully");
+        fetchAppointments(); // Refresh appointments after completion
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error completing appointment:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to complete appointment. Please try again later."
+      );
+    }
+  };
+
   const value = {
     backendUrl,
     doctorToken,
@@ -67,6 +125,8 @@ const DoctorContextProvider = (props) => {
     appointments,
     appointmentsLoading,
     fetchAppointments,
+    handleCancelAppointment,
+    handleCompleteAppointment,
   };
 
   return (
