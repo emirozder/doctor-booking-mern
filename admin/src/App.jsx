@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
@@ -26,6 +26,7 @@ const App = () => {
         <Sidebar />
         {adminToken ? (
           <Routes>
+            <Route path="/" element={<Navigate to="/admin-dashboard" />} />
             <Route path="/admin-dashboard" element={<Dashboard />} />
             <Route path="/all-appointments" element={<AllAppointments />} />
             <Route path="/add-doctor" element={<AddDoctor />} />
@@ -35,6 +36,7 @@ const App = () => {
         ) : (
           doctorToken && (
             <Routes>
+              <Route path="/" element={<Navigate to="/doctor-dashboard" />} />
               <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
               <Route
                 path="/doctor-appointments"
