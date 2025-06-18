@@ -120,7 +120,7 @@ const MyAppointments = () => {
                   key={index}
                   className={`grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b border-gray-300 px-2 ${
                     appointment?.cancelled ? "bg-red-50" : ""
-                  }`}
+                  } ${appointment?.isCompleted ? "bg-green-50" : ""}`}
                 >
                   <div>
                     <img
@@ -153,7 +153,7 @@ const MyAppointments = () => {
                   <div></div>
 
                   <div className="flex flex-col gap-2 justify-end">
-                    {!appointment?.cancelled && (
+                    {!appointment?.cancelled && !appointment?.isCompleted && (
                       <>
                         <button
                           onClick={() =>
@@ -168,6 +168,11 @@ const MyAppointments = () => {
                     {appointment?.cancelled && (
                       <button className="text-sm bg-red-600 text-white text-center sm:min-w-48 py-2 border hover:bg-red-700 transition-all duration-300 cursor-default">
                         Cancelled
+                      </button>
+                    )}
+                    {appointment?.isCompleted && (
+                      <button className="text-sm bg-green-600 text-white text-center sm:min-w-48 py-2 border hover:bg-green-700 transition-all duration-300 cursor-default">
+                        Completed
                       </button>
                     )}
                   </div>
