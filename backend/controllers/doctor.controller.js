@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import Appointment from '../models/appointment.model.js';
 import Doctor from "../models/doctor.model.js";
 import { generateDoctorToken } from "../utils/generateToken.js";
 
@@ -110,6 +111,27 @@ export const doctorLogin = async (req, res) => {
 
   } catch (error) {
     console.error('Error in doctorLogin:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const getDoctorAppointments = async (req, res) => {
+  try {
+    const docId = req.docId;
+
+    // Check if docId is provided
+    if (!docId) {
+      return res.status(400).json({ success: false, message: 'Doctor ID is required' });
+    }
+
+    // Find the appointments for the doctor
+    const appointments = await Appointment.find({ doctorId: docId })
+
+    // respond with success and the list of appointments
+    res.status(200).json({ success: true, message: 'Appointments fetched successfully', data: appointments });
+
+  } catch (error) {
+    console.error('Error in getDoctorAppointments:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 }
