@@ -10,6 +10,11 @@ const DoctorContextProvider = (props) => {
   const [doctorToken, setDoctorToken] = useState(
     localStorage.getItem("doctorToken") ?? ""
   );
+  const [appointments, setAppointments] = useState([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
+  const [doctorDashboardData, setDoctorDashboardData] = useState({});
+  const [doctorDashboardDataLoading, setDoctorDashboardDataLoading] =
+    useState(true);
   const doctorSidebarItems = [
     {
       path: "/doctor-dashboard",
@@ -27,8 +32,23 @@ const DoctorContextProvider = (props) => {
       icon: assets.people_icon,
     },
   ];
-  const [appointments, setAppointments] = useState([]);
-  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
+  const dashboardItems = [
+    {
+      name: "Earnings",
+      count: doctorDashboardData?.earnings || 0,
+      img: assets.earning_icon,
+    },
+    {
+      name: "Total Patients",
+      count: doctorDashboardData?.patients || 0,
+      img: assets.patients_icon,
+    },
+    {
+      name: "Total Appointments",
+      count: doctorDashboardData?.appointments || 0,
+      img: assets.appointments_icon,
+    },
+  ];
 
   // Function to fetch appointments
   const fetchAppointments = async () => {
@@ -117,6 +137,35 @@ const DoctorContextProvider = (props) => {
     }
   };
 
+  // Fetch doctor dashboard data
+  const fetchDoctorDashboard = async () => {
+    try {
+      const response = await axios.get(
+        backendUrl + "/doctor/doctor-dashboard",
+        {
+          headers: {
+            token: doctorToken,
+          },
+        }
+      );
+      if (response.data.success) {
+        setDoctorDashboardData(response.data.data);
+      } else {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching doctor dashboard:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to fetch doctor dashboard. Please try again later."
+      );
+    } finally {
+      setDoctorDashboardDataLoading(false);
+    }
+  };
+
   const value = {
     backendUrl,
     doctorToken,
@@ -127,6 +176,10 @@ const DoctorContextProvider = (props) => {
     fetchAppointments,
     handleCancelAppointment,
     handleCompleteAppointment,
+    fetchDoctorDashboard,
+    doctorDashboardData,
+    doctorDashboardDataLoading,
+    dashboardItems,
   };
 
   return (
