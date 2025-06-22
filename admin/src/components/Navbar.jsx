@@ -14,6 +14,7 @@ const Navbar = () => {
     adminToken && setAdminToken("");
     adminToken && localStorage.removeItem("adminToken");
     doctorToken && setDoctorToken("");
+    doctorToken && localStorage.removeItem("doctorData");
     doctorToken && localStorage.removeItem("doctorToken");
   };
 

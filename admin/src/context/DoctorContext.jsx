@@ -10,6 +10,11 @@ const DoctorContextProvider = (props) => {
   const [doctorToken, setDoctorToken] = useState(
     localStorage.getItem("doctorToken") ?? ""
   );
+  const [doctorData, setDoctorData] = useState(
+    localStorage.getItem("doctorData")
+      ? JSON.parse(localStorage.getItem("doctorData"))
+      : {}
+  );
   const [appointments, setAppointments] = useState([]);
   const [appointmentsLoading, setAppointmentsLoading] = useState(true);
   const [doctorDashboardData, setDoctorDashboardData] = useState({});
@@ -169,6 +174,8 @@ const DoctorContextProvider = (props) => {
   const value = {
     backendUrl,
     doctorToken,
+    doctorData,
+    setDoctorData,
     setDoctorToken,
     doctorSidebarItems,
     appointments,
