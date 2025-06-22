@@ -1,10 +1,10 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
+  const [userType, setUserType] = useState("Admin");
   const currencySymbol = "$";
-
   const months = [
     "Jan",
     "Feb",
@@ -45,7 +45,13 @@ const AppContextProvider = (props) => {
     return age;
   };
 
-  const value = { calculateAge, slotDateFormat, currencySymbol };
+  const value = {
+    calculateAge,
+    slotDateFormat,
+    currencySymbol,
+    userType,
+    setUserType,
+  };
 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>

@@ -3,13 +3,14 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AdminContext } from "../context/AdminContext";
+import { AppContext } from "../context/AppContext";
 import { DoctorContext } from "../context/DoctorContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const { setAdminToken, backendUrl } = useContext(AdminContext);
-  const { setDoctorToken } = useContext(DoctorContext);
-  const [state, setState] = useState("Admin");
+  const { setDoctorData, setDoctorToken } = useContext(DoctorContext);
+  const { userType, setUserType } = useContext(AppContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,20 +19,25 @@ const Login = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (state === "Admin") {
+      if (userType === "Admin") {
+        // Admin Login Logic
         const res = await axios.post(`${backendUrl}/admin/login`, formData);
         if (res.data.success) {
           localStorage.setItem("adminToken", res.data.token);
           setAdminToken(res.data.token);
+          setUserType("Admin");
           navigate("/admin-dashboard");
         } else {
           toast.error(res.data.message);
         }
       } else {
+        // Doctor Login Logic
         const res = await axios.post(`${backendUrl}/doctor/login`, formData);
         if (res.data.success) {
           localStorage.setItem("doctorToken", res.data.token);
           setDoctorToken(res.data.token);
+          localStorage.setItem("doctorData", JSON.stringify(res.data.data));
+          setDoctorData(res.data.data); // Set doctor data in context
           navigate("/doctor-dashboard");
         } else {
           toast.error(res.data.message);
@@ -51,7 +57,7 @@ const Login = () => {
     <form onSubmit={onSubmit} className="min-h-[80vh] flex items-center">
       <div className="flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96 border border-gray-200 rounded-xl text-zinc-600 shadow-lg">
         <p className="text-2xl font-semibold w-full text-center">
-          <span className="text-primary">{state}</span> Login
+          <span className="text-primary">{userType}</span> Login
         </p>
 
         <div className="w-full">
@@ -86,12 +92,12 @@ const Login = () => {
           Login
         </button>
 
-        {state === "Admin" ? (
+        {userType === "Admin" ? (
           <p className="text-sm">
             Doctor Login?{" "}
             <span
               className="text-primary cursor-pointer"
-              onClick={() => setState("Doctor")}
+              onClick={() => setUserType("Doctor")}
             >
               Click here
             </span>
@@ -101,7 +107,7 @@ const Login = () => {
             Admin Login?{" "}
             <span
               className="text-primary cursor-pointer"
-              onClick={() => setState("Admin")}
+              onClick={() => setUserType("Admin")}
             >
               Click here
             </span>
