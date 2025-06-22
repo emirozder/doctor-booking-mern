@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { v2 as cloudinary } from 'cloudinary';
 import Appointment from '../models/appointment.model.js';
 import Doctor from "../models/doctor.model.js";
 import { generateDoctorToken } from "../utils/generateToken.js";
@@ -269,6 +270,45 @@ export const doctorDashboard = async (req, res) => {
 
   } catch (error) {
     console.error('Error in doctorDashboard:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const updateDoctorProfile = async (req, res) => {
+  try {
+    const docId = req.docId;
+    const imageFile = req.file;
+
+    // Check if doctor exists
+    const doctor = await Doctor.findById(docId);
+
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: 'Doctor not found' });
+    }
+
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      docId,
+      {
+        ...req.body, address: req.body.address ? JSON.parse(req.body.address) : doctor.address,
+      },
+      { new: true }
+    );
+
+    if (imageFile) {
+      // upload image to cloudinary
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        folder: 'doctors',
+        resource_type: 'image'
+      });
+      const imageUrl = imageUpload.secure_url;
+
+      const updatedDoctor = await Doctor.findByIdAndUpdate(docId, { image: imageUrl }, { new: true });
+      return res.status(200).json({ success: true, message: 'Doctor Profile updated successfully', data: updatedDoctor });
+    }
+
+    res.status(200).json({ success: true, message: 'Doctor Profile updated successfully', data: updatedDoctor });
+  } catch (error) {
+    console.error('Error in updateDoctorProfile:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 }
