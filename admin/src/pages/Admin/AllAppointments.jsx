@@ -57,7 +57,7 @@ const AllAppointments = () => {
                   <img
                     src={appointment?.userData?.image}
                     alt="user-img"
-                    className="size-8 rounded-full"
+                    className="overflow-clip-margin-unset object-cover size-8 rounded-full"
                   />
                   <p>{appointment?.userData?.name}</p>
                 </div>
@@ -74,7 +74,7 @@ const AllAppointments = () => {
                   <img
                     src={appointment?.docData?.image}
                     alt="doc-img"
-                    className="size-8 rounded-full bg-gray-200"
+                    className="overflow-clip-margin-unset object-cover size-8 rounded-full bg-gray-200"
                   />
                   <p>{appointment?.docData?.name}</p>
                 </div>

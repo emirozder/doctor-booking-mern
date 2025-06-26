@@ -67,7 +67,7 @@ const DoctorProfile = () => {
               <img
                 src={image ? URL.createObjectURL(image) : doctorData.image}
                 alt=""
-                className="w-36 rounded opacity-75"
+                className="overflow-clip-margin-unset size-36 rounded object-cover opacity-75"
               />
               <img
                 src={assets.upload_icon}
@@ -88,7 +88,7 @@ const DoctorProfile = () => {
           <img
             src={doctorData.image}
             alt="doctor-img"
-            className="w-36 rounded"
+            className="overflow-clip-margin-unset size-36 rounded object-cover"
           />
         )}
 

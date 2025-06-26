@@ -8,6 +8,7 @@ import earning_icon from './earning_icon.svg'
 import home_icon from './home_icon.svg'
 import list_icon from './list_icon.svg'
 import loading_icon from './loading_icon.png'
+import loading_icon_white from './loading_icon_white.png'
 import patients_icon from './patients_icon.svg'
 import people_icon from './people_icon.svg'
 import tick_icon from './tick_icon.svg'
@@ -29,5 +30,6 @@ export const assets = {
   tick_icon,
   appointments_icon,
   earning_icon,
-  upload_icon
+  upload_icon,
+  loading_icon_white
 }

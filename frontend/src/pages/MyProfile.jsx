@@ -64,7 +64,7 @@ const MyProfile = () => {
             <img
               src={image ? URL.createObjectURL(image) : userData.image}
               alt=""
-              className="w-36 rounded opacity-75"
+              className="overflow-clip-margin-unset size-36 rounded object-cover opacity-75"
             />
             <img
               src={assets.upload_icon}
@@ -82,7 +82,11 @@ const MyProfile = () => {
           />
         </label>
       ) : (
-        <img src={userData.image} alt="user-img" className="w-36 rounded" />
+        <img
+          src={userData.image}
+          alt="user-img"
+          className="overflow-clip-margin-unset size-36 rounded object-cover"
+        />
       )}
 
       {editMode ? (
