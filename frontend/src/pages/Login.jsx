@@ -36,6 +36,7 @@ const Login = () => {
           localStorage.setItem("userData", JSON.stringify(res.data.data));
           setUserData(res.data.data); // Set user data in context
           navigate("/"); // Redirect to home page after successful sign up
+          scrollTo(0, 0);
         } else {
           toast.error(res.data.message);
         }
@@ -56,6 +57,7 @@ const Login = () => {
           localStorage.setItem("userData", JSON.stringify(res.data.data));
           setUserData(res.data.data); // Set user data in context
           navigate("/"); // Redirect to home page after successful login
+          scrollTo(0, 0);
         } else {
           toast.error(res.data.message);
         }
@@ -78,6 +80,7 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       navigate("/"); // Redirect to home page if already logged in
+      scrollTo(0, 0);
     }
   }, [token]);
 
