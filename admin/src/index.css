@@ -6,3 +6,7 @@
   --font-outfit: "Outfit", "sans-serif";
   --grid-template-columns-auto: repeat(auto-fill, minmax(230px, 1fr));
 }
+
+.overflow-clip-margin-unset {
+  overflow-clip-margin: unset;
+}

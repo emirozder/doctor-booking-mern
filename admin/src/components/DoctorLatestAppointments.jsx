@@ -15,12 +15,18 @@ const DoctorLatestAppointments = ({
         appointments?.map((appointment, index) => (
           <div
             key={index}
-            className="flex items-center px-6 py-3 gap-3 hover:bg-gray-100"
+            className={`flex items-center px-6 py-3 gap-3 hover:bg-gray-100 ${
+              appointment?.cancelled ? "bg-red-50 hover:bg-red-100/70" : ""
+            } ${
+              appointment?.isCompleted
+                ? "bg-green-50 hover:bg-green-100/70"
+                : ""
+            }`}
           >
             <img
               src={appointment?.userData?.image}
               alt="doc-img"
-              className="rounded-full w-10"
+              className="overflow-clip-margin-unset object-cover rounded-full size-10"
             />
             <div className="flex-1 text-sm">
               <p className="text-gray-800 font-medium">

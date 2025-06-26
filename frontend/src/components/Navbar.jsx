@@ -56,7 +56,7 @@ const Navbar = () => {
             <img
               src={userData.image}
               alt="user-profile-pic"
-              className="size-8 rounded-full"
+              className="overflow-clip-margin-unset size-8 rounded-full object-cover"
             />
             <img
               src={assets.dropdown_icon}

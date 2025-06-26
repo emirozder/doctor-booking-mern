@@ -15,5 +15,6 @@
   --grid-template-columns-auto: repeat(auto-fill, minmax(230px, 1fr));
 }
 
-@layer components {
+.overflow-clip-margin-unset {
+  overflow-clip-margin: unset;
 }

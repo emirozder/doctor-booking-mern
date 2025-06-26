@@ -126,7 +126,7 @@ const MyAppointments = () => {
                     <img
                       src={appointment?.docData?.image}
                       alt="doc-img"
-                      className="w-32 bg-indigo-50"
+                      className="overflow-clip-margin-unset size-32 object-cover bg-indigo-50"
                     />
                   </div>
                   <div className="flex-1 text-sm text-zinc-600">

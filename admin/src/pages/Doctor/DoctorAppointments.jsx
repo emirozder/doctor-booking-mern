@@ -62,7 +62,7 @@ const DoctorAppointments = () => {
                   <img
                     src={appointment?.userData?.image}
                     alt="user-img"
-                    className="size-8 rounded-full"
+                    className="overflow-clip-margin-unset object-cover size-8 rounded-full"
                   />
                   <p>{appointment?.userData?.name}</p>
                 </div>

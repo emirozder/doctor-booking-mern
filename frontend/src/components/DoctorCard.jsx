@@ -12,11 +12,13 @@ const DoctorCard = ({ doctor }) => {
       }}
       className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
     >
-      <img
-        src={doctor?.image}
-        alt={doctor?.name}
-        className="bg-blue-50 w-full"
-      />
+      <div className="bg-blue-50">
+        <img
+          src={doctor?.image}
+          alt={doctor?.name}
+          className="overflow-clip-margin-unset h-64 mx-auto object-cover"
+        />
+      </div>
       <div className="p-4">
         <div
           className={`flex items-center gap-2 text-sm text-center ${
