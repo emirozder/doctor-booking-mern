@@ -171,7 +171,9 @@ const Appointment = () => {
   const handleBookAppointment = async () => {
     if (!token) {
       toast.warning("Please login to book an appointment.");
-      return navigate("/login");
+      navigate("/login");
+      scrollTo(0, 0);
+      return;
     }
 
     try {
@@ -207,6 +209,7 @@ const Appointment = () => {
         toast.success("Appointment booked successfully!");
         fetchDoctorInfo(); // Refresh doctor info to update slots
         navigate("/my-appointments"); // Redirect to my appointments page
+        scrollTo(0, 0);
       } else {
         console.error(response.data.message);
         toast.error(response.data.message);
