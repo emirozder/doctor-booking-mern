@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
+import { DoctorContext } from "../context/DoctorContext";
 
 const DoctorLatestAppointments = ({
   appointments,
@@ -8,6 +9,7 @@ const DoctorLatestAppointments = ({
   handleCompleteAppointment,
 }) => {
   const { slotDateFormat } = useContext(AppContext);
+  const { fetchDoctorDashboard } = useContext(DoctorContext);
 
   return (
     <div className="border border-t-0 border-gray-200">
@@ -49,13 +51,21 @@ const DoctorLatestAppointments = ({
                   src={assets.cancel_icon}
                   alt="cancel"
                   className="w-8 cursor-pointer hover:scale-110 transition-all duration-300"
-                  onClick={() => handleCancelAppointment(appointment?._id)}
+                  onClick={() => {
+                    handleCancelAppointment(appointment?._id).then(() => {
+                      fetchDoctorDashboard(); // Refresh appointments after cancellation
+                    });
+                  }}
                 />
                 <img
                   src={assets.tick_icon}
                   alt="complete"
                   className="size-8 cursor-pointer hover:scale-110 transition-all duration-300"
-                  onClick={() => handleCompleteAppointment(appointment?._id)}
+                  onClick={() => {
+                    handleCompleteAppointment(appointment?._id).then(() => {
+                      fetchDoctorDashboard(); // Refresh appointments after cancellation
+                    });
+                  }}
                 />
               </div>
             )}

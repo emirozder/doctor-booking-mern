@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
 import { assets } from "../assets/assets";
+import { AdminContext } from "../context/AdminContext";
 import { AppContext } from "../context/AppContext";
 
 const LatestAppointments = ({ appointments, handleCancelAppointment }) => {
   const { slotDateFormat } = useContext(AppContext);
+  const { fetchAdminDashboardData } = useContext(AdminContext);
 
   return (
     <div className="border border-t-0 border-gray-200">
@@ -37,12 +39,18 @@ const LatestAppointments = ({ appointments, handleCancelAppointment }) => {
             </div>
             {appointment?.cancelled ? (
               <p className="text-red-400 text-xs font-medium">Cancelled</p>
+            ) : appointment?.isCompleted ? (
+              <p className="text-green-400 text-xs font-medium">Completed</p>
             ) : (
               <img
                 src={assets.cancel_icon}
                 alt="cancel"
                 className="w-8 cursor-pointer hover:scale-110 transition-all duration-300"
-                onClick={() => handleCancelAppointment(appointment?._id)}
+                onClick={() => {
+                  handleCancelAppointment(appointment?._id).then(() => {
+                    fetchAdminDashboardData(); // Refresh appointments after cancellation
+                  });
+                }}
               />
             )}
           </div>
