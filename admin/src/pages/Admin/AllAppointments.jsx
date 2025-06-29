@@ -50,6 +50,10 @@ const AllAppointments = () => {
                 key={appointment._id}
                 className={`flex flex-wrap justify-between max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] items-center text-gray-500 py-3 px-6 border-b border-stone-200 hover:bg-gray-50 transition-all duration-300 ${
                   appointment?.cancelled ? "bg-red-50 hover:bg-red-100/70" : ""
+                } ${
+                  appointment?.isCompleted
+                    ? "bg-green-50 hover:bg-green-100/70"
+                    : ""
                 }`}
               >
                 <p className="max-sm:hidden">{index + 1}</p>
@@ -82,6 +86,10 @@ const AllAppointments = () => {
                 {appointment?.cancelled ? (
                   <p className="text-red-400 text-xs font-medium text-center">
                     Cancelled
+                  </p>
+                ) : appointment?.isCompleted ? (
+                  <p className="text-green-400 text-xs font-medium text-center">
+                    Completed
                   </p>
                 ) : (
                   <img
